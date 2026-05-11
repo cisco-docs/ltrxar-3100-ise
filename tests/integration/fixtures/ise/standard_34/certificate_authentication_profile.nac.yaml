@@ -1,0 +1,9 @@
+ise:
+  identity_management:
+    certificate_authentication_profiles:
+      - name: Global_Certificate
+        description: Global_Certificate
+        certificate_attribute_name: SUBJECT_COMMON_NAME
+        allowed_as_user_name: false
+        match_mode: NEVER
+        username_from: CERTIFICATE

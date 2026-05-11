@@ -1,0 +1,72 @@
+*** Settings ***
+Documentation   Verify Network Access Policy Sets
+Suite Setup     Login ISE
+Resource        ../../ise_common.resource
+Default Tags    config   ise   network_access   policy_sets
+
+*** Test Cases ***
+
+Get Network Access Policy Sets
+    ${r}=   GET On Session   ISE_Session   /api/v1/policy/network-access/policy-set
+    Log   Response Status Code: ${r.status_code}
+    Set Suite Variable   ${r}
+
+{% for policy_set in ise.network_access.policy_sets | default([]) %}
+
+Verify Network Access Policy Set {{ policy_set.name }}
+    ${policy}=   Set Variable   $.response[?(@.name=='{{ policy_set.name }}')]
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.description   {{ policy_set.description | default('')  }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.rank   {{ policy_set.rank | default(loop.index0) }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.state   {{ policy_set.state | default(defaults.ise.network_access.policy_sets.state) | default('enabled')  }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.isProxy   {{ policy_set.is_proxy | default(defaults.ise.network_access.policy_sets.is_proxy) | default(false)  }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.serviceName   {{ policy_set.service_name }}
+{% set condition = policy_set.condition if policy_set.condition is defined else {"type": "DefaultCondition"} %}
+{% if condition.type == 'ConditionAttributes' %}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.conditionType   {{ condition.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.isNegate   {{ condition.is_negate | default(defaults.ise.network_access.policy_sets.condition.is_negate) | default(false) }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.dictionaryName   {{ condition.dictionary_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.attributeName   {{ condition.attribute_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.attributeValue   {{ condition.attribute_value }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.operator   {{ condition.operator }}
+{% elif condition.type == 'ConditionReference' %}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.conditionType   {{ condition.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.isNegate   {{ condition.is_negate | default(defaults.ise.network_access.policy_sets.condition.is_negate) | default(false) }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.name   {{ condition.name }}
+{% elif condition.type == 'ConditionAndBlock' or condition.type == 'ConditionOrBlock' %}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.conditionType   {{ condition.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${policy}.condition.isNegate   {{ condition.is_negate | default(defaults.ise.network_access.policy_sets.condition.is_negate) | default(false) }}
+{% for child in condition.children %}
+    ${cond_child}=   Set Variable   ${policy}.condition.children[{{loop.index0}}]
+{% if child.type == 'ConditionAttributes' %}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.conditionType   {{ child.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.isNegate   {{ child.is_negate | default(defaults.ise.network_access.policy_elements.conditions.is_negate) | default(false) }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.attributeName   {{ child.attribute_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.dictionaryName   {{ child.dictionary_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.attributeValue   {{ child.attribute_value }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.operator   {{ child.operator }}
+{% elif child.type == 'ConditionReference' %}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.conditionType   {{ child.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.isNegate   {{ child.is_negate | default(defaults.ise.network_access.policy_elements.conditions.is_negate) | default(false) }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.name   {{ child.name }}
+{% elif child.type == 'ConditionAndBlock' or child.type == 'ConditionOrBlock' %}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.conditionType   {{ child.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child}.isNegate   {{ child.is_negate | default(defaults.ise.network_access.policy_elements.conditions.is_negate) | default(false) }}
+{% for child_child in child.children %}
+    ${cond_child_child}=   Set Variable   ${cond_child}.children[{{loop.index0}}]
+{% if child_child.type == 'ConditionAttributes' %}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.conditionType   {{ child_child.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.isNegate   {{ child_child.is_negate | default(defaults.ise.network_access.policy_elements.conditions.is_negate) | default(false) }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.attributeName   {{ child_child.attribute_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.dictionaryName   {{ child_child.dictionary_name }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.attributeValue   {{ child_child.attribute_value }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.operator   {{ child_child.operator }}
+{% elif child_child.type == 'ConditionReference' %}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.name   {{ child_child.name }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.conditionType   {{ child_child.type }}
+    Should Be Equal Value Json String   ${r.json()}   ${cond_child_child}.isNegate   {{ child_child.is_negate | default(defaults.ise.network_access.policy_elements.conditions.is_negate) | default(false) }}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}

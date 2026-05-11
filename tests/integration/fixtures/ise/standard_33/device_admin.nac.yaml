@@ -1,0 +1,26 @@
+ise:
+  network_access:
+    policy_elements:
+      conditions:
+        - name: Mac-test-one
+          type: LibraryConditionOrBlock
+          is_negate: false
+          children:
+          - type: ConditionAttributes
+            is_negate: false
+            dictionary_name: Radius
+            attribute_name: Calling-Station-ID
+            operator: macStartsWith
+            attribute_value: 00:20:2C
+          - type: ConditionAttributes
+            is_negate: false
+            dictionary_name: Radius
+            attribute_name: Calling-Station-ID
+            operator: macEndsWith
+            attribute_value: AA:BC:8C
+          - type: ConditionAttributes
+            is_negate: false
+            dictionary_name: Radius
+            attribute_name: Calling-Station-ID
+            operator: macContains
+            attribute_value: B6:A2:1F

@@ -1,0 +1,17 @@
+ise:
+  system:
+    repositories:
+      - name: TEST_DISK
+        protocol: DISK
+        path: /
+      - name: TEST_FTP
+        protocol: SFTP
+        path: /
+        server_name: 1.1.1.1
+        user_name: user1
+        password: password1
+        enable_pki: true
+    licenses:
+      - name: ESSENTIAL
+      - name: PREMIER
+        status: DISABLED

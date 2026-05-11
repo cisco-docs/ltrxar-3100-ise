@@ -1,0 +1,375 @@
+---
+ise:
+  device_administration:
+    policy_elements:
+      conditions:
+        - name: MIN_CON_DA
+          type: LibraryConditionAttributes
+          dictionary_name: TACACS
+          attribute_name: User
+          operator: equals
+          attribute_value: User1
+        - name: MAX_CON_DA
+          type: LibraryConditionAndBlock
+          is_negate: false
+          description: My condition
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  dictionary_name: TACACS
+                  attribute_name: User
+                  operator: equals
+                  attribute_value: User1
+                  is_negate: true
+                - name: EAP-TLS
+                  type: ConditionReference
+            - name: EAP-TLS
+              type: ConditionReference
+      allowed_protocols:
+        - name: MIN_AP_DA
+        - name: MAX_AP_DA
+          description: My ap
+          allow_pap_ascii: false
+          allow_chap: true
+          allow_ms_chap_v1: true
+      tacacs_profiles:
+        - name: MIN_TP
+        - name: MAX_TP
+          description: My Tacacs profile
+          session_attributes:
+            - name: ATTR1
+              value: VALUE1
+            - type: OPTIONAL
+              name: ATTR2
+              value: VALUE2
+      tacacs_command_sets:
+        - name: MIN_TCS
+        - name: MAX_TCS
+          description: My Tacacs command set
+          permit_unmatched: true
+          commands:
+            - command: show1
+            - grant: DENY
+              command: show2
+              arguments: "abc def"
+      time_date_conditions:
+        - name: MIN_TIME_DA
+        - name: MAX_TIME_DA
+          description: My time condition
+          week_days: [Monday, Tuesday]
+          week_days_exception: [Thursday, Wednesday]
+          start_date: "2021-01-01"
+          end_date: "2025-01-01"
+          exception_start_date: "2022-01-01"
+          exception_end_date: "2024-01-01"
+          start_time: "08:00"
+          end_time: "18:00"
+          exception_start_time: "10:00"
+          exception_end_time: "12:00"
+    policy_sets:
+      - name: MIN_PS_DA
+        condition:
+          type: ConditionReference
+          name: MIN_CON_DA
+        service_name: Default Device Admin
+      - name: MIN_PS_DA_2
+        condition:
+          type: ConditionReference
+          name: MIN_CON_DA
+        service_name: Default Device Admin
+      - name: MAX_PS_DA
+        description: My policy set
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: DEVICE
+                  attribute_name: Location
+                  operator: equals
+                  attribute_value: All Locations
+                - type: ConditionReference
+                  is_negate: false
+                  name: MIN_CON_DA
+            - type: ConditionReference
+              is_negate: false
+              name: MIN_CON_DA
+        is_proxy: false
+        service_name: Default Device Admin
+        authentication_rules:
+          - name: MIN_AUTH_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+          - name: MIN_AUTH_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+          - name: MAX_AUTH_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            identity_source_name: Internal Endpoints
+            if_auth_fail: REJECT
+            if_user_not_found: CONTINUE
+            if_process_fail: DROP
+          - name: Default
+        authorization_rules:
+          - name: MIN_AUTHZ_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MIN_AUTHZ_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MAX_AUTHZ_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            profile: MIN_TP
+            command_sets: [MIN_TCS, MAX_TCS]
+          - name: Default
+            profile: MIN_TP
+        authorization_exception_rules:
+          - name: MIN_AUTHZ_EX_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MIN_AUTHZ_EX_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MAX_AUTHZ_EX_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            profile: MIN_TP
+            command_sets: [MIN_TCS, MAX_TCS]
+      - name: MAX_PS_DA2
+        description: My policy set
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: DEVICE
+                  attribute_name: Location
+                  operator: equals
+                  attribute_value: All Locations
+                - type: ConditionReference
+                  is_negate: false
+                  name: MIN_CON_DA
+            - type: ConditionReference
+              is_negate: false
+              name: MIN_CON_DA
+        is_proxy: false
+        service_name: Default Device Admin
+        authentication_rules:
+          - name: MIN_AUTH_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+          - name: MIN_AUTH_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+          - name: MAX_AUTH_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            identity_source_name: Internal Endpoints
+            if_auth_fail: REJECT
+            if_user_not_found: CONTINUE
+            if_process_fail: DROP
+          - name: Default
+        authorization_rules:
+          - name: MIN_AUTHZ_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MIN_AUTHZ_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MAX_AUTHZ_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            profile: MIN_TP
+            command_sets: [MIN_TCS, MAX_TCS]
+          - name: Default
+            profile: MIN_TP
+        authorization_exception_rules:
+          - name: MIN_AUTHZ_EX_DA
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MIN_AUTHZ_EX_DA_2
+            condition:
+              type: ConditionReference
+              name: EAP-TLS
+            profile: MIN_TP
+          - name: MAX_AUTHZ_EX_DA
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: DEVICE
+                      attribute_name: Location
+                      operator: equals
+                      attribute_value: All Locations
+                    - type: ConditionReference
+                      is_negate: false
+                      name: EAP-TLS
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            profile: MIN_TP
+            command_sets: [MIN_TCS, MAX_TCS]
+      - name: Default
+        service_name: Default Device Admin
+    authorization_global_exception_rules:
+      - name: MIN_AUTHZ_GLOBAL_EX_DA
+        condition:
+          type: ConditionReference
+          name: EAP-TLS
+        profile: MIN_TP
+      - name: MIN_AUTHZ_GLOBAL_EX_DA_2
+        condition:
+          type: ConditionReference
+          name: EAP-TLS
+        profile: MIN_TP
+      - name: MAX_AUTHZ_GLOBAL_EX_DA
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: DEVICE
+                  attribute_name: Location
+                  operator: equals
+                  attribute_value: All Locations
+                - type: ConditionReference
+                  is_negate: false
+                  name: EAP-TLS
+            - type: ConditionReference
+              is_negate: false
+              name: EAP-TLS
+        profile: MIN_TP
+        command_sets: [MIN_TCS, MAX_TCS]

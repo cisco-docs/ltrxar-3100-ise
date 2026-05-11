@@ -1,0 +1,3 @@
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning", "ignore::PendingDeprecationWarning"]
+markers = ["unit", "integration", "validate", "ise", "ise_32", "ise_33", "ise_34", "ise_35", "terraform"]

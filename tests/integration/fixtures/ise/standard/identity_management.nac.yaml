@@ -1,0 +1,62 @@
+ise:
+  identity_management:
+    endpoint_identity_groups:
+      - name: MIN_EIG
+      - name: MAX_EIG
+        description: My description
+        parent_group: Blocked List
+        children:
+          - name: MAX_EIG_CHILD
+            children:
+              - name: MAX_EIG_CHILD_CHILD
+                children:
+                  - name: MAX_EIG_CHILD_CHILD_CHILD
+                    children:
+                      - name: MAX_EIG_CHILD_CHILD_CHILD_CHILD
+                        children:
+                          - name: MAX_EIG_CHILD_CHILD_CHILD_CHILD_CHILD
+    endpoints:
+      - mac: FF:FF:FF:FF:FF:00
+        description: My description
+        endpoint_identity_group: MAX_EIG_CHILD_CHILD_CHILD_CHILD_CHILD
+        static_profile_assignment: false
+        static_group_assignment: true
+    user_identity_groups:
+      - name: MIN_UIG
+      - name: MAX_UIG
+        description: My description
+        children:
+          - name: MAX_UIG_CHILD
+            children:
+              - name: MAX_UIG_CHILD_CHILD
+                children:
+                  - name: MAX_UIG_CHILD_CHILD_CHILD
+                    children:
+                      - name: MAX_UIG_CHILD_CHILD_CHILD_CHILD
+                        children:
+                          - name: MAX_UIG_CHILD_CHILD_CHILD_CHILD_CHILD
+    internal_users:
+      - name: MIN_USER
+        password: Cisco123
+      - name: MAX_USER
+        description: My description
+        enabled: false
+        email: aa.aa@cisco.com
+        account_name_alias: abc
+        password: Cisco123
+        enable_password: Cisco123
+        first_name: Max
+        last_name: User
+        change_password: false
+        user_identity_groups:
+          - MAX_UIG_CHILD_CHILD_CHILD_CHILD_CHILD
+        # password_never_expires: false
+        password_id_store: Internal Users
+    identity_source_sequences:
+      - name: TEST_SEQ
+        description: My identity source sequence
+        certificate_authentication_profile: Preloaded_Certificate_Profile
+        break_on_store_fail: true
+        identity_sources:
+          - Internal Users
+          - Guest Users

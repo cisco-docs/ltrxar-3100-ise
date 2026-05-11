@@ -1,0 +1,481 @@
+---
+ise:
+  network_access:
+    policy_elements:
+      authorization_profiles:
+        - name: MIN_AP
+        - name: MIN_AP2
+          advanced_attributes:
+            - name: Radius:Idle-Timeout
+              value: "28800"
+        - name: MAX_AP
+          description: My description
+          vlan_name_id: "23"
+          vlan_tag_id: 1
+          web_redirection:
+            type: CentralizedWebAuth
+            acl: ACL123
+            portal_name: Sponsored Guest Portal (default)
+            static_ip_host_name_fqdn: 2.3.4.5
+            display_certificates_renewal_messages: true
+          agentless_posture: true
+          access_type: ACCESS_REJECT
+          profile_name: Cisco
+          airespace_acl: ACL1
+          airespace_ipv6_acl: ACL2
+          dacl_name: MAX_ACL
+          ipv6_dacl_name: ACL5
+          auto_smart_port: SP1
+          interface_template: TEMP1
+          avc_profile: AVC1
+          asa_vpn: VPN1
+          unique_identifier: U1
+          track_movement: true
+          service_template: false
+          easywired_session_candidate: true
+          voice_domain_permission: true
+          neat: true
+          web_auth: true
+          mac_sec_policy: MUST_NOT_SECURE
+          reauthentication_connectivity: RADIUS_REQUEST
+          reauthentication_timer: 1234
+          advanced_attributes:
+            - name: Cisco:cisco-av-pair
+              value: TACACS:Privilege-Level
+            - name: Cisco:cisco-av-pair
+              value: CERTIFICATE:Is Expired
+      conditions:
+        - name: MIN_CON
+          type: LibraryConditionAttributes
+          dictionary_name: CERTIFICATE
+          attribute_name: Is Expired
+          operator: equals
+          attribute_value: "False"
+        - name: MAX_CON
+          type: LibraryConditionAndBlock
+          is_negate: false
+          description: My condition
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  dictionary_name: CERTIFICATE
+                  attribute_name: Is Expired
+                  operator: equals
+                  attribute_value: "False"
+                  is_negate: true
+                - name: 5G
+                  type: ConditionReference
+            - name: 5G
+              type: ConditionReference
+      allowed_protocols:
+        - name: MIN_AP
+        - name: MAX_AP
+          description: My ap
+          process_host_lookup: false
+          allow_pap_ascii: false
+          allow_chap: true
+          allow_ms_chap_v1: true
+          allow_ms_chap_v2: true
+          allow_eap_md5: false
+          allow_leap: true
+          allow_eap_tls: false
+          allow_eap_ttls: false
+          allow_eap_fast: false
+          allow_peap: false
+          allow_teap: false
+          allow_preferred_eap_protocol: true
+          preferred_eap_protocol: LEAP
+          eap_tls_l_bit: true
+          allow_weak_ciphers_for_eap: true
+          require_message_auth: true
+          five_g: true
+          teap:
+            eap_ms_chap_v2: false
+            eap_ms_chap_v2_pwd_change: false
+            eap_ms_chap_v2_pwd_change_retries: 2
+            eap_tls: false
+            eap_tls_auth_of_expired_certs: true
+            accept_client_cert_during_tunnel_est: false
+            enable_eap_chaining: true
+            allow_downgrade_msk: false
+            request_basic_pwd_auth: true
+          eap_ttls:
+            pap_ascii: false
+            chap: false
+            ms_chap_v1: false
+            ms_chap_v2: false
+            eap_md5: false
+            eap_ms_chap_v2: false
+            eap_ms_chap_v2_pwd_change: false
+            eap_ms_chap_v2_pwd_change_retries: 2
+          eap_tls:
+            auth_of_expired_certs: true
+            enable_stateless_session_resume: true
+          eap_fast:
+            eap_ms_chap_v2: false
+            eap_ms_chap_v2_pwd_change: false
+            eap_ms_chap_v2_pwd_change_retries: 2
+            eap_gtc: false
+            eap_gtc_pwd_change: false
+            eap_gtc_pwd_change_retries: 2
+            eap_tls: false
+            eap_tls_auth_of_expired_certs: true
+            use_pacs: false
+            use_pacs_tunnel_pac_ttl: 60
+            use_pacs_tunnel_pac_ttl_units: WEEKS
+            use_pacs_use_proactive_pac_update_precentage: 15
+            use_pacs_allow_anonym_provisioning: true
+            use_pacs_allow_authen_provisioning: true
+            use_pacs_accept_client_cert: true
+            use_pacs_server_returns: true
+            use_pacs_allow_machine_authentication: true
+            use_pacs_machine_pac_ttl: 6
+            use_pacs_machine_pac_ttl_units: DAYS
+            use_pacs_stateless_session_resume: true
+            enable_eap_chaining: true
+          peap:
+            eap_ms_chap_v2: false
+            eap_ms_chap_v2_pwd_change: false
+            eap_ms_chap_v2_pwd_change_retries: 2
+            eap_gtc: true
+            eap_gtc_pwd_change: true
+            eap_gtc_pwd_change_retries: 2
+            eap_tls: false
+            eap_tls_auth_of_expired_certs: true
+            require_cryptobinding: true
+            peap_v0: true
+      downloadable_acls:
+        - name: MIN_ACL
+          dacl_content: permit ip any any
+        - name: MAX_ACL
+          description: My dacl
+          dacl_type: IP_AGNOSTIC
+          dacl_content: permit ip any any
+      dictionaries:
+        - name: MIN_DICT
+          version: "1.0"
+        - name: MAX_DICT
+          description: My dict
+          version: "1.1.1"
+          attribute_type: MSG_ATTR
+      time_date_conditions:
+        - name: MIN_TIME
+        - name: MAX_TIME
+          description: My time condition
+          week_days: [Monday, Tuesday]
+          week_days_exception: [Thursday, Wednesday]
+          start_date: "2021-01-01"
+          end_date: "2025-01-01"
+          exception_start_date: "2022-01-01"
+          exception_end_date: "2024-01-01"
+          start_time: "08:00"
+          end_time: "18:00"
+          exception_start_time: "10:00"
+          exception_end_time: "12:00"
+    policy_sets:
+      - name: MIN_PS
+        condition:
+          type: ConditionReference
+          name: 5G
+        service_name: Default Network Access
+      - name: MIN_PS_2
+        condition:
+          type: ConditionReference
+          name: 5G
+        service_name: Default Network Access
+      - name: MAX_PS
+        description: My policy set
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: Radius
+                  attribute_name: User-Name
+                  operator: equals
+                  attribute_value: User1
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            - type: ConditionReference
+              is_negate: false
+              name: 5G
+        is_proxy: false
+        service_name: Default Network Access
+        authentication_rules:
+          - name: MIN_AUTH
+            condition:
+              type: ConditionReference
+              name: 5G
+          - name: MIN_AUTH_2
+            condition:
+              type: ConditionReference
+              name: 5G
+          - name: MAX_AUTH
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            identity_source_name: Internal Users
+            if_auth_fail: REJECT
+            if_user_not_found: CONTINUE
+            if_process_fail: DROP
+          - name: Default
+        authorization_rules:
+          - name: MIN_AUTHZ
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MIN_AUTHZ_2
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MAX_AUTHZ
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            profiles: [MIN_AP]
+            security_group: BYOD
+          - name: Default
+            profiles: [MIN_AP]
+        authorization_exception_rules:
+          - name: MIN_AUTHZ_EX
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MIN_AUTHZ_EX_2
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MAX_AUTHZ_EX
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            profiles: [MIN_AP]
+            security_group: BYOD
+      - name: MAX_PS2
+        description: My policy set
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: Radius
+                  attribute_name: User-Name
+                  operator: equals
+                  attribute_value: User1
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            - type: ConditionReference
+              is_negate: false
+              name: 5G
+        is_proxy: false
+        service_name: Default Network Access
+        authentication_rules:
+          - name: MIN_AUTH
+            condition:
+              type: ConditionReference
+              name: 5G
+          - name: MIN_AUTH_2
+            condition:
+              type: ConditionReference
+              name: 5G
+          - name: MAX_AUTH
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            identity_source_name: Internal Users
+            if_auth_fail: REJECT
+            if_user_not_found: CONTINUE
+            if_process_fail: DROP
+          - name: Default
+        authorization_rules:
+          - name: MIN_AUTHZ
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MIN_AUTHZ_2
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MAX_AUTHZ
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            profiles: [MIN_AP]
+            security_group: BYOD
+          - name: Default
+            profiles: [MIN_AP]
+        authorization_exception_rules:
+          - name: MIN_AUTHZ_EX
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MIN_AUTHZ_EX_2
+            condition:
+              type: ConditionReference
+              name: 5G
+            profiles: [MIN_AP]
+          - name: MAX_AUTHZ_EX
+            state: disabled
+            condition:
+              type: ConditionAndBlock
+              is_negate: false
+              children:
+                - type: ConditionOrBlock
+                  is_negate: true
+                  children:
+                    - type: ConditionAttributes
+                      is_negate: false
+                      dictionary_name: Radius
+                      attribute_name: User-Name
+                      operator: equals
+                      attribute_value: User1
+                    - type: ConditionReference
+                      is_negate: false
+                      name: 5G
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            profiles: [MIN_AP]
+            security_group: BYOD
+      - name: Default
+        service_name: Default Network Access
+    authorization_global_exception_rules:
+      - name: MIN_AUTHZ_GLOBAL_EX
+        condition:
+          type: ConditionReference
+          name: 5G
+        profiles: [MIN_AP]
+      - name: MIN_AUTHZ_GLOBAL_EX_2
+        condition:
+          type: ConditionReference
+          name: 5G
+        profiles: [MIN_AP]
+      - name: MAX_AUTHZ_GLOBAL_EX
+        state: disabled
+        condition:
+          type: ConditionAndBlock
+          is_negate: false
+          children:
+            - type: ConditionOrBlock
+              is_negate: true
+              children:
+                - type: ConditionAttributes
+                  is_negate: false
+                  dictionary_name: Radius
+                  attribute_name: User-Name
+                  operator: equals
+                  attribute_value: User1
+                - type: ConditionReference
+                  is_negate: false
+                  name: 5G
+            - type: ConditionReference
+              is_negate: false
+              name: 5G
+        profiles: [MIN_AP]
+        security_group: BYOD

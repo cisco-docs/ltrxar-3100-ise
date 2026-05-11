@@ -1,0 +1,162 @@
+---
+objects:
+  - name: Repository
+    template: repository
+    folder: system
+    paths: [ise.system.repositories]
+  - name: License
+    template: license
+    folder: system
+    paths: [ise.system.licenses]
+  - name: Network Device Group
+    template: network_device_group
+    folder: network_resources
+    paths: [ise.network_resources.network_device_groups]
+  - name: Network Device
+    template: network_device
+    folder: network_resources
+    paths: [ise.network_resources.network_devices]
+  - name: Endpoint Identity Group
+    template: endpoint_identity_group
+    folder: identity_management
+    paths: [ise.identity_management.endpoint_identity_groups]
+  - name: User Identity Group
+    template: user_identity_group
+    folder: identity_management
+    paths: [ise.identity_management.user_identity_groups]
+  - name: Internal User
+    template: internal_user
+    folder: identity_management
+    paths: [ise.identity_management.internal_users]
+  - name: Certificate Authentication Profile
+    template: certificate_authentication_profile
+    folder: identity_management
+    paths: [ise.identity_management.certificate_authentication_profiles]
+  - name: Active Directory
+    template: active_directory
+    folder: identity_management
+    paths: [ise.identity_management.active_directories]
+  - name: Identity Source Sequence
+    template: identity_source_sequence
+    folder: identity_management
+    paths: [ise.identity_management.identity_source_sequences]
+  - name: Endpoint
+    template: endpoint
+    folder: identity_management
+    paths: [ise.identity_management.endpoints]
+  - name: Security Group
+    template: security_group
+    folder: trust_sec
+    paths: [ise.trust_sec.security_groups]
+  - name: Security Group ACL
+    template: security_group_acl
+    folder: trust_sec
+    paths: [ise.trust_sec.security_group_acls]
+  - name: IP SGT Mapping Group
+    template: ip_sgt_mapping_group
+    folder: trust_sec
+    paths: [ise.trust_sec.ip_sgt_mapping_groups]
+  - name: IP SGT Mapping
+    template: ip_sgt_mapping
+    folder: trust_sec
+    paths: [ise.trust_sec.ip_sgt_mappings]
+  - name: Matrix Entry
+    template: matrix_entry
+    folder: trust_sec
+    paths: [ise.trust_sec.matrix_entries]
+  - name: Network Access Authorization Profile
+    template: network_access_authorization_profile
+    folder: network_access
+    paths: [ise.network_access.policy_elements.authorization_profiles]
+  - name: Network Access Condition
+    template: network_access_condition
+    folder: network_access
+    paths: [ise.network_access.policy_elements.conditions]
+  - name: Network Access Allowed Protocols
+    template: network_access_allowed_protocols
+    folder: network_access
+    paths: [ise.network_access.policy_elements.allowed_protocols]
+  - name: Network Access Downloadable ACL
+    template: network_access_downloadable_acl
+    folder: network_access
+    paths: [ise.network_access.policy_elements.downloadable_acls]
+  - name: Network Access Dictionary
+    template: network_access_dictionary
+    folder: network_access
+    paths: [ise.network_access.policy_elements.dictionaries]
+  - name: Network Access Time Date Condition
+    template: network_access_time_date_condition
+    folder: network_access
+    paths: [ise.network_access.policy_elements.time_date_conditions]
+  - name: Network Access Policy Set
+    template: network_access_policy_set
+    folder: network_access
+    paths:
+      - ise.network_access.policy_sets.name
+      - ise.network_access.policy_sets.description
+      - ise.network_access.policy_sets.state
+      - ise.network_access.policy_sets.condition
+      - ise.network_access.policy_sets.is_proxy
+      - ise.network_access.policy_sets.service_name
+  - name: Network Access Authentication Rule
+    template: network_access_authentication_rule
+    folder: network_access
+    paths: [ise.network_access.policy_sets.authentication_rules]
+  - name: Network Access Authorization Rule
+    template: network_access_authorization_rule
+    folder: network_access
+    paths: [ise.network_access.policy_sets.authorization_rules]
+  - name: Network Access Authorization Exception Rule
+    template: network_access_authorization_exception_rule
+    folder: network_access
+    paths: [ise.network_access.policy_sets.authorization_exception_rules]
+  - name: Network Access Authorization Global Exception Rule
+    template: network_access_authorization_global_exception_rule
+    folder: network_access
+    paths: [ise.network_access.authorization_global_exception_rules]
+  - name: Device Admin Condition
+    template: device_admin_condition
+    folder: device_admin
+    paths: [ise.device_administration.policy_elements.conditions]
+  - name: Device Admin Allowed Protocols
+    template: device_admin_allowed_protocols
+    folder: device_admin
+    paths: [ise.device_administration.policy_elements.allowed_protocols]
+  - name: Device Admin TACACS Profile
+    template: device_admin_tacacs_profile
+    folder: device_admin
+    paths: [ise.device_administration.policy_elements.tacacs_profiles]
+  - name: Device Admin TACACS Command Set
+    template: device_admin_tacacs_command_set
+    folder: device_admin
+    paths: [ise.device_administration.policy_elements.tacacs_command_sets]
+  - name: Device Admin Time Date Condition
+    template: device_admin_time_date_condition
+    folder: device_admin
+    paths: [ise.device_administration.policy_elements.time_date_conditions]
+  - name: Device Admin Policy Set
+    template: device_admin_policy_set
+    folder: device_admin
+    paths:
+      - ise.device_administration.policy_sets.name
+      - ise.device_administration.policy_sets.description
+      - ise.device_administration.policy_sets.state
+      - ise.device_administration.policy_sets.condition
+      - ise.device_administration.policy_sets.is_proxy
+      - ise.device_administration.policy_sets.service_name
+  - name: Device Admin Authentication Rule
+    template: device_admin_authentication_rule
+    folder: device_admin
+    paths: [ise.device_administration.policy_sets.authentication_rules]
+  - name: Device Admin Authorization Rule
+    template: device_admin_authorization_rule
+    folder: device_admin
+    paths: [ise.device_administration.policy_sets.authorization_rules]
+  - name: Device Admin Authorization Exception Rule
+    template: device_admin_authorization_exception_rule
+    folder: device_admin
+    paths: [ise.device_administration.policy_sets.authorization_exception_rules]
+  - name: Device Admin Authorization Global Exception Rule
+    template: device_admin_authorization_global_exception_rule
+    folder: device_admin
+    paths: [ise.device_administration.authorization_global_exception_rules]

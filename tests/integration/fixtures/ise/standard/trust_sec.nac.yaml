@@ -1,0 +1,40 @@
+ise:
+  trust_sec:
+    security_groups:
+      - name: SGT101
+        value: 101
+      - name: SGT102
+        description: My SGT 102
+        propagate_to_apic: true
+        value: 102
+      - name: SGT103
+        value: 103
+    security_group_acls:
+      - name: MIN_ACL
+        acl_content: "permit ip"
+      - name: MAX_ACL
+        description: My ACL
+        ip_version: IP_AGNOSTIC
+        acl_content: "permit ip"
+    ip_sgt_mapping_groups:
+      - name: MIN_MAP_GROUP
+        sgt: SGT103
+      - name: MAX_MAP_GROUP
+        deploy_type: ALL
+        sgt: SGT102
+    ip_sgt_mappings:
+      - host_ip: 1.2.3.4/32
+        sgt: SGT101
+      - host_name: host1.cisco.com
+        deploy_type: ALL
+        sgt: SGT103
+      - host_name: map.cisco.com
+        mapping_group: MAX_MAP_GROUP
+    matrix_entries:
+      - source_sgt: SGT101
+        destination_sgt: SGT102
+        sgacl_name: Permit IP
+      - source_sgt: SGT102
+        destination_sgt: SGT103
+        rule_status: MONITOR
+        sgacl_name: Deny IP
