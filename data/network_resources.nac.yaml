@@ -1,0 +1,108 @@
+---
+# Network Access Devices (NADs) for the LTRXAR-3100 multi-domain demo.
+#
+# Each device authenticates to ISE for CTS PAC provisioning and downloads
+# the egress matrix + SGACLs. Without these entries, no fabric or SDWAN
+# device can enforce TrustSec policy. See multi-domain/design.md §6.3.
+#
+# IPs and credentials are placeholders — populate from your secrets vault
+# before deploy. Short download intervals (60s) are deliberate so that the
+# Beat 4 demo (matrix toggle) takes effect within the demo window.
+ise:
+  network_resources:
+    network_devices:
+      - name: BORDER
+        description: SDA Fabric A border + control plane node
+        ip_addresses:
+          - 198.18.130.10
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: BORDER
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA
+
+      - name: FIAB
+        description: SDA Fabric B fabric-in-a-box (border + control plane + edge)
+        ip_addresses:
+          - 198.18.130.11
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: FIAB
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA
+
+      - name: SDA-EDGE-01
+        description: SDA Fabric A edge node (hosts laptop)
+        ip_addresses:
+          - 198.18.130.1
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: SDA-EDGE-01
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA
+
+      - name: SDA-EDGE-02
+        description: SDA Fabric A edge node (hosts server) — primary enforcement point for headline drop
+        ip_addresses:
+          - 198.18.130.2
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: SDA-EDGE-02
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA
+
+      - name: C-EDGE-01
+        description: SDWAN cEdge Site 2 (Fabric B-facing, peer to FIAB)
+        ip_addresses:
+          - 198.18.130.21
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: C-EDGE-01
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA
+
+      - name: C-EDGE-02
+        description: SDWAN cEdge Site 3 (Fabric A-facing, peer to BORDER)
+        ip_addresses:
+          - 198.18.130.22
+        radius:
+          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+        trust_sec:
+          device_id: C-EDGE-02
+          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
+          rest_api_username: cts-admin
+          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          download_environment_data_every_x_seconds: 60
+          download_sgacl_lists_every_x_seconds: 60
+          send_configuration_to_device: true
+          send_configuration_to_device_using: ENABLE_USING_COA

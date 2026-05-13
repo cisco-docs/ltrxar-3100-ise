@@ -1,34 +1,19 @@
 ---
+# Wired access policy for endpoint connectivity.
+#
+# SGT assignment for endpoints in this lab is driven entirely by static
+# IP-SGT mappings in trust_sec.nac.yaml (Path A — see multi-domain/design.md
+# §6.1). This policy_set keeps the protocol-level wired access plumbing in
+# place (so endpoints can attach to SDA edge ports configured with
+# "No Authentication"); the authz layer just permits authenticated traffic
+# without dynamically assigning an SGT.
+#
+# In production, the dot1x → ISE authz rule path would carry SGT assignment
+# in the RADIUS Accept (Cisco AV-pair cts:security-group-tag). That is
+# documented narratively in design.md but not configured here — CML stub
+# endpoints have no real supplicant, so it would never fire.
 ise:
   network_access:
-    policy_elements:
-      downloadable_acls:
-        - name: PERMIT_Dacl
-          description: Permit ip
-          dacl_content: permit ip any any
-      authorization_profiles:
-        - name: Host01_access
-          description: "Host01_Campus"
-          access_type: "ACCESS_ACCEPT"
-          track_movement: false
-          agentless_posture: false
-          service_template: false
-          easywired_session_candidate: false
-          dacl_name: PERMIT_Dacl
-          profile_name: "Cisco"
-          vlan_tag_id: 1
-          vlan_name_id: 192_168_100_0-Campus
-        - name: Host02_access
-          description: "Host02_Campus"
-          access_type: "ACCESS_ACCEPT"
-          track_movement: false
-          agentless_posture: false
-          service_template: false
-          easywired_session_candidate: false
-          dacl_name: PERMIT_Dacl
-          profile_name: "Cisco"
-          vlan_tag_id: 1
-          vlan_name_id: 192_168_100_0-Campus
     policy_sets:
       - name: Wired Access Policy
         description: Wired Access
@@ -65,26 +50,6 @@ ise:
             if_user_not_found: CONTINUE
             if_process_fail: DROP
         authorization_rules:
-          - name: Host01 Authorization
-            condition:
-              type: ConditionAttributes
-              dictionary_name: IdentityGroup
-              attribute_name: Name
-              operator: equals
-              attribute_value: Endpoint Identity Groups:CampusEndpoints01
-            profiles:
-              - Host01_access
-            security_group: SGT1
-          - name: Host02 Authorization
-            condition:
-              type: ConditionAttributes
-              dictionary_name: IdentityGroup
-              attribute_name: Name
-              operator: equals
-              attribute_value: Endpoint Identity Groups:CampusEndpoints02
-            profiles:
-              - Host02_access
-            security_group: SGT2
           - name: Basic_Authenticated_Access
             condition:
               type: ConditionReference

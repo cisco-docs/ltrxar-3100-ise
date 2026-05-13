@@ -1,17 +1,72 @@
 ---
+# TrustSec data plane policy for the LTRXAR-3100 multi-domain demo.
+# See multi-domain/design.md §6 for end-to-end design across the three planes
+# (classification, propagation, enforcement) and §7 for the policy matrix.
 ise:
   trust_sec:
     security_groups:
-      - name: SGT1
-        description: SGT1
-        value: 1001
-      - name: SGT2
-        description: SGT2
-        value: 1002
+      - name: Employees
+        description: Internal user endpoints (laptops, workstations)
+        value: 10
+      - name: Servers
+        description: Production servers
+        value: 20
+      - name: Cameras
+        description: IoT cameras and surveillance devices
+        value: 30
+
+    security_group_acls:
+      - name: PERMIT-ANY
+        description: Permit all IP traffic between SGTs
+        ip_version: IP_AGNOSTIC
+        acl_content: |
+          permit ip
+      - name: PERMIT-CAMERA-STREAM
+        description: Allow Employees to view camera streams (RTSP + HTTP)
+        ip_version: IPV4
+        acl_content: |
+          permit tcp dst eq 554
+          permit tcp dst eq 8080
+          deny ip
+      - name: DENY-IP-LOG
+        description: Deny everything and log (headline drop SGACL)
+        ip_version: IP_AGNOSTIC
+        acl_content: |
+          deny ip log
+
+    ip_sgt_mappings:
+      - name: laptop
+        host_name: laptop
+        host_ip: 192.168.100.10
+        sgt: Employees
+        deploy_type: ALL
+      - name: server
+        host_name: server
+        host_ip: 192.168.110.10
+        sgt: Servers
+        deploy_type: ALL
+      - name: camera
+        host_name: camera
+        host_ip: 192.168.200.10
+        sgt: Cameras
+        deploy_type: ALL
+
     matrix_entries:
-      - source_sgt: SGT1
-        destination_sgt: SGT2
-        sgacl_name: Deny IP
-      - source_sgt: SGT2
-        destination_sgt: SGT1
-        sgacl_name: Deny IP
+      # ── Permit beats ──
+      - source_sgt: Employees
+        destination_sgt: Servers
+        sgacl_name: PERMIT-ANY
+        rule_status: ENABLED
+      - source_sgt: Employees
+        destination_sgt: Cameras
+        sgacl_name: PERMIT-CAMERA-STREAM
+        rule_status: ENABLED
+      # ── Deny beats — the headline ──
+      - source_sgt: Cameras
+        destination_sgt: Servers
+        sgacl_name: DENY-IP-LOG
+        rule_status: ENABLED
+      - source_sgt: Cameras
+        destination_sgt: Employees
+        sgacl_name: DENY-IP-LOG
+        rule_status: ENABLED
