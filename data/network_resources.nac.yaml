@@ -13,8 +13,8 @@ ise:
     network_devices:
       - name: BORDER
         description: SDA Fabric A border + control plane node
-        ip_addresses:
-          - 198.18.130.10
+        ips:
+          - ip: 198.18.130.10
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
@@ -29,8 +29,8 @@ ise:
 
       - name: FIAB
         description: SDA Fabric B fabric-in-a-box (border + control plane + edge)
-        ip_addresses:
-          - 198.18.130.11
+        ips:
+          - ip: 198.18.130.11
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
@@ -45,8 +45,8 @@ ise:
 
       - name: SDA-EDGE-01
         description: SDA Fabric A edge node (hosts laptop)
-        ip_addresses:
-          - 198.18.130.1
+        ips:
+          - ip: 198.18.130.1
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
@@ -61,8 +61,8 @@ ise:
 
       - name: SDA-EDGE-02
         description: SDA Fabric A edge node (hosts server) — primary enforcement point for headline drop
-        ip_addresses:
-          - 198.18.130.2
+        ips:
+          - ip: 198.18.130.2
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
@@ -77,8 +77,8 @@ ise:
 
       - name: C-EDGE-01
         description: SDWAN cEdge Site 2 (Fabric B-facing, peer to FIAB)
-        ip_addresses:
-          - 198.18.130.21
+        ips:
+          - ip: 198.18.130.21
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
@@ -93,8 +93,8 @@ ise:
 
       - name: C-EDGE-02
         description: SDWAN cEdge Site 3 (Fabric A-facing, peer to BORDER)
-        ip_addresses:
-          - 198.18.130.22
+        ips:
+          - ip: 198.18.130.22
         radius:
           shared_secret: __PLACEHOLDER_SHARED_SECRET__
         trust_sec:
