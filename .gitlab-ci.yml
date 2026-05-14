@@ -18,7 +18,7 @@ variables:
     value: "${GITLAB_TOKEN}"
   TF_HTTP_ADDRESS:
     description: "GitLab HTTP Address to store the TF state file"
-    value: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/nac-ise-comprehensive-example"
+    value: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/tfstate"
   TF_HTTP_LOCK_ADDRESS:
     description: "GitLab HTTP Address to lock the TF state file"
     value: ${TF_HTTP_ADDRESS}/lock
