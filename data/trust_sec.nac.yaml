@@ -5,7 +5,7 @@
 ise:
   trust_sec:
     security_groups:
-      - name: Employees
+      - name: IT_Admin
         description: Internal user endpoints (laptops, workstations)
         value: 10
       - name: Servers
@@ -22,7 +22,7 @@ ise:
         acl_content: |
           permit ip
       - name: PERMIT-CAMERA-STREAM
-        description: Allow Employees to view camera streams (RTSP + HTTP)
+        description: Allow IT_Admins to view camera streams (RTSP + HTTP)
         ip_version: IPV4
         acl_content: |
           permit tcp dst eq 554
