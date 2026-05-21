@@ -29,10 +29,10 @@ ise:
         ips:
           - ip: 198.18.140.31
         radius:
-          shared_secret: Cisco123!
+          shared_secret: C1sco12345
         trust_sec:
           device_id: SDA-BORDER
-          device_password: Cisco123!
+          device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
@@ -43,10 +43,10 @@ ise:
         ips:
           - ip: 198.18.140.34
         radius:
-          shared_secret: Cisco123!
+          shared_secret: C1sco12345
         trust_sec:
           device_id: SDA-FIAB
-          device_password: Cisco123!
+          device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
@@ -57,10 +57,10 @@ ise:
         ips:
           - ip: 198.18.140.32
         radius:
-          shared_secret: Cisco123!
+          shared_secret: C1sco12345
         trust_sec:
           device_id: SDA-EDGE-01
-          device_password: Cisco123!
+          device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
@@ -71,10 +71,10 @@ ise:
         ips:
           - ip: 198.18.140.33
         radius:
-          shared_secret: Cisco123!
+          shared_secret: C1sco12345
         trust_sec:
           device_id: SDA-EDGE-02
-          device_password: Cisco123!
+          device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true

@@ -10,6 +10,9 @@ terraform {
   }
 }
 
+provider "ise" {
+
+}
 module "ise" {
   source  = "netascode/nac-ise/ise"
   version = "0.2.2"
