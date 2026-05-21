@@ -38,7 +38,7 @@ ise:
       - name: laptop
         host_name: laptop
         host_ip: 192.168.100.10
-        sgt: Employees
+        sgt: IT_Admin
         deploy_type: ALL
       - name: server
         host_name: server
@@ -53,11 +53,11 @@ ise:
 
     matrix_entries:
       # ── Permit beats ──
-      - source_sgt: Employees
+      - source_sgt: IT_Admin
         destination_sgt: Servers
         sgacl_name: PERMIT-ANY
         rule_status: ENABLED
-      - source_sgt: Employees
+      - source_sgt: IT_Admin
         destination_sgt: Cameras
         sgacl_name: PERMIT-CAMERA-STREAM
         rule_status: ENABLED
@@ -67,6 +67,6 @@ ise:
         sgacl_name: DENY-IP-LOG
         rule_status: ENABLED
       - source_sgt: Cameras
-        destination_sgt: Employees
+        destination_sgt: IT_Admin
         sgacl_name: DENY-IP-LOG
         rule_status: ENABLED
