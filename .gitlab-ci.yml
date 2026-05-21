@@ -7,27 +7,44 @@ stages:
   - validate
   - plan
   - deploy
-  - cleanup
+  - destroy
 
 variables:
+  GIT_SSL_NO_VERIFY: "true"
+
+  ISE_USERNAME:
+    description: "Cisco ISE Admin Username"
+  ISE_PASSWORD:
+    description: "Cisco ISE Admin Password"
+  ISE_URL:
+    description: "Cisco ISE URL"
+  GITLAB_TOKEN:
+    description: "User Access Token. Used to create comments on Merge Requests"
   TF_HTTP_USERNAME:
     description: "GitLab Username"
-    value: "root"
+    value: "gitlab-ci-token"
   TF_HTTP_PASSWORD:
     description: "GitLab Access Token"
     value: "${GITLAB_TOKEN}"
+  WEBEX_ROOM_ID:
+    description: "Cisco Webex Room ID"
+  WEBEX_TOKEN:
+    description: "Cisco Webex Bot Token"
+  GITLAB_API_URL:
+    description: "GitLab API v4 root URL"
+    value: "${CI_API_V4_URL}"
   TF_HTTP_ADDRESS:
     description: "GitLab HTTP Address to store the TF state file"
-    value: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/terraform/state/tfstate"
+    value: "${GITLAB_API_URL}/projects/${CI_PROJECT_ID}/terraform/state/tfstate"
   TF_HTTP_LOCK_ADDRESS:
     description: "GitLab HTTP Address to lock the TF state file"
-    value: ${TF_HTTP_ADDRESS}/lock
+    value: "${TF_HTTP_ADDRESS}/lock"
   TF_HTTP_LOCK_METHOD:
     description: "Method to lock TF state file"
     value: POST
   TF_HTTP_UNLOCK_ADDRESS:
     description: "GitLab HTTP Address to unlock the TF state file"
-    value: ${TF_HTTP_ADDRESS}/lock
+    value: "${TF_HTTP_ADDRESS}/lock"
   TF_HTTP_UNLOCK_METHOD:
     description: "Method to unlock TF state file"
     value: DELETE
@@ -35,8 +52,15 @@ variables:
     description: "Disable IPv6 for terraform operations"
     value: net.ipv6=off
 
-# DNS patch
 before_script:
+  - update-ca-certificates
+  - echo "http_proxy=$http_proxy"
+  - echo "https_proxy=$https_proxy"
+  - echo "NO_PROXY=$NO_PROXY"
+  - echo "no_proxy=$no_proxy"
+  - git config --global http.proxy "$http_proxy"
+  - git config --global https.proxy "$https_proxy"
+  # DNS patch — replace 8.8.8.8 with 1.1.1.1 (lab DNS doesn't reach 8.8.8.8)
   - cp /etc/resolv.conf /tmp/resolv.conf
   - sed -i 's/8\.8\.8\.8/1.1.1.1/g' /tmp/resolv.conf
   - cp /tmp/resolv.conf /etc/resolv.conf
@@ -46,17 +70,25 @@ cache:
   paths:
     - .terraform
     - .terraform.lock.hcl
+    - defaults.yaml
 
 validate:
   stage: validate
   script:
     - set -o pipefail && terraform fmt -check |& tee fmt_output.txt
+    - set -o pipefail && nac-validate ./data/ |& tee validate_output.txt
   artifacts:
     paths:
       - fmt_output.txt
+      - validate_output.txt
+    expire_in: 7 days
+  cache: []
+  rules:
+    - if: $CI_COMMIT_TAG == null
 
 plan:
   stage: plan
+  resource_group: ise
   script:
     - terraform init -input=false --upgrade
     - terraform plan -out=plan.tfplan -input=false
@@ -69,17 +101,28 @@ plan:
       - plan.txt
       - plan.tfplan
       - plan_gitlab.json
+    expire_in: 7 days
     reports:
       terraform: plan_gitlab.json
   dependencies: []
   needs:
     - validate
-  only:
-    - merge_requests
-    - main
+  rules:
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^devhub\//'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
+    - when: never
 
 deploy:
   stage: deploy
+  resource_group: ise
   script:
     - terraform init -input=false
     - terraform apply -input=false -auto-approve plan.tfplan
@@ -88,17 +131,35 @@ deploy:
   needs:
     - plan
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_COMMIT_TAG'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^devhub\//'
       when: manual
+    - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+    - when: never
 
-cleanup:
-  stage: cleanup
+destroy:
+  stage: destroy
+  resource_group: ise
+  needs: []
+  dependencies: []
+  variables:
+    TF_HTTP_PASSWORD: "${GITLAB_TOKEN}"
   script:
     - terraform init -input=false
     - terraform destroy -input=false -auto-approve
-  dependencies: []
-  needs:
-    - deploy
-  when: manual
-  only:
-    - main
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
+      when: manual
+      allow_failure: true
+    - if: '$CI_COMMIT_BRANCH == "master"'
+      when: manual
+      allow_failure: true
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+      allow_failure: true

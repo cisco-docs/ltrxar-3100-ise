@@ -1,43 +1,52 @@
 ---
 # Network Access Devices (NADs) for the LTRXAR-3100 multi-domain demo.
 #
-# Each device authenticates to ISE for CTS PAC provisioning and downloads
-# the egress matrix + SGACLs. Without these entries, no fabric or SDWAN
-# device can enforce TrustSec policy. See multi-domain/design.md §6.3.
+# Each SDA device authenticates to ISE for CTS PAC provisioning and downloads
+# the SGT name table, IP-SGT bindings, and the SGACL matrix. Without these
+# entries, no fabric device can classify or enforce TrustSec policy.
+# See multidomain/design.md §6.3.
 #
-# IPs and credentials are placeholders — populate from your secrets vault
-# before deploy. Short download intervals (60s) are deliberate so that the
-# Beat 4 demo (matrix toggle) takes effect within the demo window.
+# Credentials (single shared value for lab simplicity — DO NOT REUSE IN PROD):
+#   radius.shared_secret      → must match the device's `radius server / key`
+#   trust_sec.device_password → must match the device's `cts credentials password`
+#
+# rest_api_username/password are deliberately omitted: we use
+# `send_configuration_to_device_using: ENABLE_USING_COA`, which pushes matrix
+# updates via RADIUS CoA — REST API to the device is not used.
+#
+# Short download intervals (60s) are deliberate so that the Beat 4 demo
+# (matrix toggle) takes effect within the demo window.
+#
+# C-EDGE-01 and C-EDGE-02 are intentionally NOT registered as NADs — they
+# run pure CTS inline tagging (sgt_propagation + sgt_trusted), so they
+# trust SDA's classification and propagate the tag without needing PAC,
+# IP-SGT cache, or SGACL matrix locally. See bottom of file.
 ise:
   network_resources:
     network_devices:
-      - name: BORDER
+      - name: SDA-BORDER
         description: SDA Fabric A border + control plane node
         ips:
-          - ip: 198.18.130.10
+          - ip: 198.18.140.31
         radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+          shared_secret: Cisco123!
         trust_sec:
-          device_id: BORDER
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          device_id: SDA-BORDER
+          device_password: Cisco123!
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
           send_configuration_to_device_using: ENABLE_USING_COA
 
-      - name: FIAB
+      - name: SDA-FIAB
         description: SDA Fabric B fabric-in-a-box (border + control plane + edge)
         ips:
-          - ip: 198.18.130.11
+          - ip: 198.18.140.34
         radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+          shared_secret: Cisco123!
         trust_sec:
-          device_id: FIAB
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          device_id: SDA-FIAB
+          device_password: Cisco123!
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
@@ -46,14 +55,12 @@ ise:
       - name: SDA-EDGE-01
         description: SDA Fabric A edge node (hosts laptop)
         ips:
-          - ip: 198.18.130.1
+          - ip: 198.18.140.32
         radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+          shared_secret: Cisco123!
         trust_sec:
           device_id: SDA-EDGE-01
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          device_password: Cisco123!
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
@@ -62,47 +69,23 @@ ise:
       - name: SDA-EDGE-02
         description: SDA Fabric A edge node (hosts server) — primary enforcement point for headline drop
         ips:
-          - ip: 198.18.130.2
+          - ip: 198.18.140.33
         radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
+          shared_secret: Cisco123!
         trust_sec:
           device_id: SDA-EDGE-02
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
+          device_password: Cisco123!
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
           send_configuration_to_device: true
           send_configuration_to_device_using: ENABLE_USING_COA
 
-      - name: C-EDGE-01
-        description: SDWAN cEdge Site 2 (Fabric B-facing, peer to FIAB)
-        ips:
-          - ip: 198.18.130.21
-        radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
-        trust_sec:
-          device_id: C-EDGE-01
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
-          download_environment_data_every_x_seconds: 60
-          download_sgacl_lists_every_x_seconds: 60
-          send_configuration_to_device: true
-          send_configuration_to_device_using: ENABLE_USING_COA
-
-      - name: C-EDGE-02
-        description: SDWAN cEdge Site 3 (Fabric A-facing, peer to BORDER)
-        ips:
-          - ip: 198.18.130.22
-        radius:
-          shared_secret: __PLACEHOLDER_SHARED_SECRET__
-        trust_sec:
-          device_id: C-EDGE-02
-          device_password: __PLACEHOLDER_DEVICE_PASSWORD__
-          rest_api_username: cts-admin
-          rest_api_password: __PLACEHOLDER_REST_PASSWORD__
-          download_environment_data_every_x_seconds: 60
-          download_sgacl_lists_every_x_seconds: 60
-          send_configuration_to_device: true
-          send_configuration_to_device_using: ENABLE_USING_COA
+      # ─────────────────────────────────────────────────────────────────────
+      # C-EDGE-01 and C-EDGE-02 are intentionally NOT registered as NADs.
+      # They run pure CTS inline tagging (sgt_propagation + sgt_trusted) on
+      # the LAN handoff — they trust SDA's classification and propagate the
+      # SGT across the SD-WAN overlay, but neither classify nor enforce.
+      # No need for ISE PAC, IP-SGT bindings, or SGACL matrix on the cEdges.
+      # The headline drop (Cameras → Servers/Employees) is enforced at
+      # SDA-EDGE-02. If cEdge enforcement is added later, register them here.
+      # ─────────────────────────────────────────────────────────────────────
