@@ -7,7 +7,7 @@ ise:
     security_groups:
       - name: IT_Admin
         description: Internal user endpoints (laptops, workstations)
-        value: 10
+        value: 11
       - name: Servers
         description: Production servers
         value: 20
