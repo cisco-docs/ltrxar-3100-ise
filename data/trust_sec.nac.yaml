@@ -16,19 +16,19 @@ ise:
         value: 30
 
     security_group_acls:
-      - name: PERMIT-ANY
+      - name: PERMIT_ANY
         description: Permit all IP traffic between SGTs
         ip_version: IP_AGNOSTIC
         acl_content: |
           permit ip
-      - name: PERMIT-CAMERA-STREAM
+      - name: PERMIT_CAMERA_STREAM
         description: Allow IT_Admins to view camera streams (RTSP + HTTP)
         ip_version: IPV4
         acl_content: |
           permit tcp dst eq 554
           permit tcp dst eq 8080
           deny ip
-      - name: DENY-IP-LOG
+      - name: DENY_IP_LOG
         description: Deny everything and log (headline drop SGACL)
         ip_version: IP_AGNOSTIC
         acl_content: |
@@ -55,18 +55,18 @@ ise:
       # ── Permit beats ──
       - source_sgt: IT_Admin
         destination_sgt: Servers
-        sgacl_name: PERMIT-ANY
+        sgacl_name: PERMIT_ANY
         rule_status: ENABLED
       - source_sgt: IT_Admin
         destination_sgt: Cameras
-        sgacl_name: PERMIT-CAMERA-STREAM
+        sgacl_name: PERMIT_CAMERA_STREAM
         rule_status: ENABLED
       # ── Deny beats — the headline ──
       - source_sgt: Cameras
         destination_sgt: Servers
-        sgacl_name: DENY-IP-LOG
+        sgacl_name: DENY_IP_LOG
         rule_status: ENABLED
       - source_sgt: Cameras
         destination_sgt: IT_Admin
-        sgacl_name: DENY-IP-LOG
+        sgacl_name: DENY_IP_LOG
         rule_status: ENABLED
