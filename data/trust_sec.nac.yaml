@@ -28,7 +28,7 @@ ise:
           permit tcp dst eq 554
           permit tcp dst eq 8080
           deny ip
-      - name: DENY_IP_LOG
+      - name: LTRXAR_DENY_IP_LOG
         description: Deny everything and log (headline drop SGACL)
         ip_version: IP_AGNOSTIC
         acl_content: |
@@ -64,9 +64,9 @@ ise:
       # ── Deny beats — the headline ──
       - source_sgt: Cameras
         destination_sgt: Servers
-        sgacl_name: DENY_IP_LOG
+        sgacl_name: LTRXAR_DENY_IP_LOG
         rule_status: ENABLED
       - source_sgt: Cameras
         destination_sgt: IT_Admin
-        sgacl_name: DENY_IP_LOG
+        sgacl_name: LTRXAR_DENY_IP_LOG
         rule_status: ENABLED
