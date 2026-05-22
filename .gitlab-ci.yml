@@ -1,6 +1,6 @@
 ---
 image:
-  name: danischm/nac:0.1.5
+  name: danischm/nac:latest
   pull_policy: if-not-present
 
 stages:
