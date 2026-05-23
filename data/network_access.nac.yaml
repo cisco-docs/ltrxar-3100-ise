@@ -15,7 +15,7 @@
 ise:
   network_access:
     policy_sets:
-      - name: Wired Access Policy
+      - name: Wired Access Policy Set
         description: Wired Access
         condition:
           type: ConditionAttributes
