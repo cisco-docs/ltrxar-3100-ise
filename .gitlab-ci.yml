@@ -112,12 +112,14 @@ plan:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^devhub\//'
       when: on_success
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
     - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
       when: on_success
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: on_success
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: on_success
+    # - if: '$CI_COMMIT_BRANCH == "master"'
+    #   when: on_success
+    # - if: '$CI_COMMIT_BRANCH == "main"'
+    #   when: on_success
     - when: never
 
 deploy:
@@ -135,12 +137,14 @@ deploy:
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^devhub\//'
       when: manual
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: manual
     - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
       when: manual
-    - if: '$CI_COMMIT_BRANCH == "master"'
-      when: manual
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: manual
+    # - if: '$CI_COMMIT_BRANCH == "master"'
+    #   when: manual
+    # - if: '$CI_COMMIT_BRANCH == "main"'
+    #   when: manual
     - when: never
 
 destroy:
