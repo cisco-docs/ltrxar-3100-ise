@@ -60,7 +60,6 @@ before_script:
   - echo "no_proxy=$no_proxy"
   - git config --global http.proxy "$http_proxy"
   - git config --global https.proxy "$https_proxy"
-  # DNS patch — replace 8.8.8.8 with 1.1.1.1 (lab DNS doesn't reach 8.8.8.8)
   - cp /etc/resolv.conf /tmp/resolv.conf
   - sed -i 's/8\.8\.8\.8/1.1.1.1/g' /tmp/resolv.conf
   - cp /tmp/resolv.conf /etc/resolv.conf
@@ -116,10 +115,6 @@ plan:
       when: on_success
     - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
       when: on_success
-    # - if: '$CI_COMMIT_BRANCH == "master"'
-    #   when: on_success
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-    #   when: on_success
     - when: never
 
 deploy:
@@ -141,10 +136,6 @@ deploy:
       when: manual
     - if: '$CI_COMMIT_BRANCH =~ /^devhub\//'
       when: manual
-    # - if: '$CI_COMMIT_BRANCH == "master"'
-    #   when: manual
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-    #   when: manual
     - when: never
 
 destroy:
@@ -166,9 +157,4 @@ destroy:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: manual
       allow_failure: true
-    # - if: '$CI_COMMIT_BRANCH == "master"'
-    #   when: manual
-    #   allow_failure: true
-    # - if: '$CI_COMMIT_BRANCH == "main"'
-    #   when: manual
-    #   allow_failure: true
+    - when: never
