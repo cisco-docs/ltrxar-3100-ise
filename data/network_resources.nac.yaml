@@ -8,6 +8,12 @@
 #
 # Credentials (single shared value for lab simplicity — DO NOT REUSE IN PROD):
 #   radius.shared_secret      → must match the device's `radius server / key`
+#   trust_sec.device_id       → MUST match what the device sends as
+#                               `cts credentials id <X>` — by convention here
+#                               that's the device hostname (BORDER.cisco.eu,
+#                               EDGE01.cisco.eu, etc.). The NAD `name:` field
+#                               is just an ISE display label — does not affect
+#                               the CTS handshake.
 #   trust_sec.device_password → must match the device's `cts credentials password`
 #
 # rest_api_username/password are deliberately omitted: we use
@@ -31,7 +37,7 @@ ise:
         radius:
           shared_secret: C1sco12345
         trust_sec:
-          device_id: SDA-BORDER
+          device_id: BORDER.cisco.eu
           device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
@@ -45,7 +51,7 @@ ise:
         radius:
           shared_secret: C1sco12345
         trust_sec:
-          device_id: SDA-FIAB
+          device_id: FIAB.cisco.eu
           device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
@@ -59,7 +65,7 @@ ise:
         radius:
           shared_secret: C1sco12345
         trust_sec:
-          device_id: SDA-EDGE-01
+          device_id: EDGE01.cisco.eu
           device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
@@ -73,7 +79,7 @@ ise:
         radius:
           shared_secret: C1sco12345
         trust_sec:
-          device_id: SDA-EDGE-02
+          device_id: EDGE02.cisco.eu
           device_password: C1sco12345
           download_environment_data_every_x_seconds: 60
           download_sgacl_lists_every_x_seconds: 60
