@@ -1,7 +1,5 @@
 ---
 # TrustSec data plane policy for the LTRXAR-3100 multi-domain demo.
-# See multi-domain/design.md §6 for end-to-end design across the three planes
-# (classification, propagation, enforcement) and §7 for the policy matrix.
 ise:
   trust_sec:
     security_groups:

@@ -4,7 +4,6 @@
 # Each SDA device authenticates to ISE for CTS PAC provisioning and downloads
 # the SGT name table, IP-SGT bindings, and the SGACL matrix. Without these
 # entries, no fabric device can classify or enforce TrustSec policy.
-# See multidomain/design.md §6.3.
 #
 # Credentials (single shared value for lab simplicity — DO NOT REUSE IN PROD):
 #   radius.shared_secret      → must match the device's `radius server / key`
@@ -92,6 +91,6 @@ ise:
       # the LAN handoff — they trust SDA's classification and propagate the
       # SGT across the SD-WAN overlay, but neither classify nor enforce.
       # No need for ISE PAC, IP-SGT bindings, or SGACL matrix on the cEdges.
-      # The headline drop (Cameras → Servers/Employees) is enforced at
-      # SDA-EDGE-02. If cEdge enforcement is added later, register them here.
+      # The headline drop (Cameras → Servers/IT_Admin) is enforced at
+      # SDA-EDGE-02.
       # ─────────────────────────────────────────────────────────────────────
