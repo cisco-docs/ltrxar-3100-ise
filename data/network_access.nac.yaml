@@ -2,15 +2,13 @@
 # Wired access policy for endpoint connectivity.
 #
 # SGT assignment for endpoints in this lab is driven entirely by static
-# IP-SGT mappings in trust_sec.nac.yaml (Path A — see multi-domain/design.md
-# §6.1). This policy_set keeps the protocol-level wired access plumbing in
+# IP-SGT mappings in trust_sec.nac.yaml. This policy_set keeps the protocol-level wired access plumbing in
 # place (so endpoints can attach to SDA edge ports configured with
 # "No Authentication"); the authz layer just permits authenticated traffic
 # without dynamically assigning an SGT.
 #
 # In production, the dot1x → ISE authz rule path would carry SGT assignment
-# in the RADIUS Accept (Cisco AV-pair cts:security-group-tag). That is
-# documented narratively in design.md but not configured here — CML stub
+# in the RADIUS Accept (Cisco AV-pair cts:security-group-tag). CML stub
 # endpoints have no real supplicant, so it would never fire.
 ise:
   network_access:
